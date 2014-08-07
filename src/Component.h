@@ -1,6 +1,8 @@
 #ifndef _STOKED_COMPONENT_H_
 #define _STOKED_COMPONENT_H_
 
+#include <string>
+
 typedef unsigned long ComponentIdentifier;
 
 /**

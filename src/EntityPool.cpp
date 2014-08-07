@@ -1,4 +1,5 @@
 #include "EntityPool.h"
+#include <assert.h>
 
 using namespace stoked;
 
@@ -10,13 +11,13 @@ EntityPool::EntityPool(const unsigned long capacity) :
   m_nullEntityRef(NULL)
 {
     assert(stoked::NullEntityIdentifier > 0);
-    m_capacity = hdClamp(capacity, 0UL, stoked::NullEntityIdentifier - 1);
+    m_capacity = capacity;
     
     for (EntityIdentifier i = 0; i < m_capacity; ++i)
     {
         Entity *entity = new Entity(i);
-        m_entities.Add(entity);
-        m_freeEntities.Add(entity);
+        m_entities.push_back(entity);
+        m_freeEntities.push_back(entity);
     }
     
     m_nullEntityRef = new Entity(stoked::NullEntityIdentifier);
@@ -40,45 +41,45 @@ Entity * EntityPool::Create()
     assert(m_freeEntities.size() <= m_entities.size());
     assert(m_usedEntities.size() + m_freeEntities.size() == m_entities.size());
     
-    if (m_freeEntities.IsEmpty())
+    if (m_freeEntities.empty())
     {
         return m_nullEntityRef;
     }
     
-    Entity * entity = m_freeEntities.Top();
-    m_freeEntities.Pop();
-    m_usedEntities.Add(entity);
+    Entity * entity = m_freeEntities.back();
+    m_freeEntities.pop_back();
+    m_usedEntities.push_back(entity);
     return entity;
 }
 
 
 bool EntityPool::Free(Entity * entity)
 {
-    assert(m_freeEntities.Size() <= m_entities.Size());
+    assert(m_freeEntities.size() <= m_entities.size());
     
     if (entity == NULL)
     {
         return false;
     }
     
-    if (m_freeEntities.Size() == m_entities.Size())
+    if (m_freeEntities.size() == m_entities.size())
     {
         return false;
     }
     
-    if (entity < m_entities.At(0) ||
-        entity > m_entities.At(m_entities.Size() - 1))
+    if (entity < m_entities.at(0) ||
+        entity > m_entities.at(m_entities.size() - 1))
     {
-        hdError("Entity is not part of this pool!");
+        fprintf(stderr, "Entity is not part of this pool!");
         return false;
     }
     
-    m_usedEntities.Remove(entity);
+    //m_usedEntities.remove(entity);
     
     entity->Reset();
-    m_freeEntities.Add(entity);
+    m_freeEntities.push_back(entity);
     
-    assert(m_usedEntities.Size() + m_freeEntities.Size() == m_entities.Size());
+    assert(m_usedEntities.size() + m_freeEntities.size() == m_entities.size());
     
     return true;
 }
@@ -86,12 +87,12 @@ bool EntityPool::Free(Entity * entity)
 
 void EntityPool::PrintDebugInfo()
 {
-    hdPrintf("%d free entities available in this pool.\n", m_freeEntities.GetSize());
+    fprintf(stderr, "%lu free entities available in this pool.\n", m_freeEntities.size());
     //m_usedPool.PrintDebugInfo();
 }
 
 
-const stoked::Vector<Entity *> * EntityPool::GetEntities() const
+const std::vector<Entity *> * EntityPool::GetEntities() const
 {
     return &m_usedEntities;
 }

@@ -3,7 +3,8 @@
 
 #include <string>
 #include <map>
-#include "Core/Component/Component.h"
+#include <uuid/uuid.h>
+#include "Component.h"
 
 #define kEntityUUIDSize 40
 
@@ -37,7 +38,7 @@ namespace stoked
         
         EntityIdentifier m_ID;
         
-        char *m_name;
+        std::string m_name;
         
         uuid_t *m_uuid;
         
@@ -46,9 +47,9 @@ namespace stoked
         
     public:
         
-        const char * GetName() const;
+        const std::string & GetName() const;
         
-        void SetName(const char * name);
+        void SetName(const std::string &name);
 		
         EntityIdentifier GetID() const;
         

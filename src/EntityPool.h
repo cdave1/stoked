@@ -2,8 +2,7 @@
 #define _STOKED_ENTITY_POOL_H_
 
 #include <vector>
-#include "Core/Entity/Entity.h"
-#include "Core/Collections/Collections.h"
+#include "Entity.h"
 
 namespace stoked
 {
@@ -34,7 +33,7 @@ namespace stoked
         
         void PrintDebugInfo();
         
-        const hd::Vector<Entity *> * GetEntities() const;
+        const std::vector<Entity *> * GetEntities() const;
         
         
     private:

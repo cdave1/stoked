@@ -1,5 +1,5 @@
 #include "Component.h"
-#include "Core/Component/AbstractComponentPool.h"
+#include "AbstractComponentPool.h"
 
 using namespace stoked;
 
@@ -11,7 +11,7 @@ ComponentIdentifier Component::GetID() const
 
 void Component::PrintDebugInfo() const
 {
-    hdPrintf("Component with ID: %lu\n", m_ID);
+    fprintf(stderr, "Component with ID: %lu\n", m_ID);
 }
 
 

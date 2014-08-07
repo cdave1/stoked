@@ -1,7 +1,7 @@
 #ifndef _STOKED_ENTITY_SYSTEM_H_
 #define _STOKED_ENTITY_SYSTEM_H_
 
-#include "Core/Entity/EntityPool.h"
+#include "EntityPool.h"
 
 namespace stoked
 {

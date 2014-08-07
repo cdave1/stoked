@@ -1,7 +1,8 @@
 #ifndef _HD_COMPONENT_POOL_H_
 #define _HD_COMPONENT_POOL_H_
 
-#include "Core/Component/AbstractComponentPool.h"
+#include "AbstractComponentPool.h"
+#include <assert.h>
 
 // Pull a component off the "available" pool and put into the
 // "used" elements pool.  When the component is
@@ -15,9 +16,9 @@ namespace stoked
     class ComponentPool : public AbstractComponentPool
     {
     private:
-        std::vector<T *> * m_items;
+        std::vector<T *> m_items;
         
-        std::vector<T *> * m_freeItems;
+        std::vector<T *> m_freeItems;
         
         unsigned int m_capacity;
         
@@ -30,11 +31,7 @@ namespace stoked
         
         ComponentPool(const unsigned int capacity);
         
-        ~ComponentPool()
-        {
-            hdDeleteSafely(m_items);
-            hdDeleteSafely(m_freeItems);
-        }
+        ~ComponentPool() {}
         
         T * Get();
         
@@ -59,20 +56,17 @@ namespace stoked
 template<class T>
 stoked::ComponentPool<T>::ComponentPool(const unsigned int capacity) :
   AbstractComponentPool(),
-  m_items(NULL),
-  m_freeItems(NULL),
+  m_items(capacity),
+  m_freeItems(capacity),
   m_capacity(capacity),
   m_debugMessages(false)
 {
-    m_items = new stoked::Vector<T *>(capacity);
-    m_freeItems = new stoked::Vector<T *>(capacity);
-    
     for (int i = 0; i < m_capacity; ++i)
     {
         T *component = new T(i);
         component->SetComponentPool(this);
-        m_items->Add(component);
-        m_freeItems->Add(component);
+        m_items.push_back(component);
+        m_freeItems.push_back(component);
     }
     
     m_nullComponent = new T(0);
@@ -82,7 +76,7 @@ stoked::ComponentPool<T>::ComponentPool(const unsigned int capacity) :
 template<class T>
 bool stoked::ComponentPool<T>::Available()
 {
-    return !m_freeItems->empty();
+    return !m_freeItems.empty();
 }
 
 
@@ -96,9 +90,9 @@ bool stoked::ComponentPool<T>::IsNull(T * component)
 template<class T>
 T * stoked::ComponentPool<T>::Get()
 {
-    hdAssert(m_freeItems->Size() <= m_items->Size());
+    hdAssert(m_freeItems.size() <= m_items.size());
     
-    if (m_freeItems->IsEmpty())
+    if (m_freeItems.empty())
     {
         return m_nullComponent;
     }
@@ -106,7 +100,7 @@ T * stoked::ComponentPool<T>::Get()
     T * freeItem = m_freeItems->Top();
     m_freeItems->Pop();
     
-    hdAssert(freeItem->IsFree());
+    assert(freeItem->IsFree());
     
     freeItem->SetBusy();
     
@@ -119,20 +113,20 @@ bool stoked::ComponentPool<T>::Free(Component *usedComponent)
 {
     T *component = static_cast<T *>(usedComponent);
     
-    hdAssert(m_freeItems->Size() <= m_items->Size());
+    hdAssert(m_freeItems.size() <= m_items.size());
     
     if (component == NULL)
     {
         return false;
     }
     
-    if (m_freeItems->Size() == m_items->Size())
+    if (m_freeItems.size() == m_items.size())
     {
         return false;
     }
     
-    if (component < m_items->At(0) ||
-        component > m_items->At(m_items->Size() - 1))
+    if (component < m_items.at(0) ||
+        component > m_items.at(m_items.size() - 1))
     {
         return false;
     }
@@ -151,12 +145,12 @@ void stoked::ComponentPool<T>::FreeAll()
 {
     m_freeItems->Clear();
     
-    for (int i = 0; i < m_items->Size(); ++i)
+    for (int i = 0; i < m_items.size(); ++i)
     {
-        T *component = m_items->At(i);
+        T *component = m_items.at(i);
         component->Reset();
         component->Free();
-        m_freeItems->Add(component);
+        m_freeItems.push_back(component);
     }
 }
 
@@ -164,7 +158,7 @@ void stoked::ComponentPool<T>::FreeAll()
 template<class T>
 void stoked::ComponentPool<T>::PrintDebugInfo()
 {
-    hdPrintf("%d items on the available pool.\n", m_items->GetSize());
+    fprintf(stderr, "%d items on the available pool.\n", m_items.size());
     m_freeItems->PrintDebugInfo();
 }
 

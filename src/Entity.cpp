@@ -1,19 +1,23 @@
 #include "Entity.h"
+#include <stdint.h>
+#include <math.h>
+#include <limits.h>
+#include <string.h>
+#include <stdlib.h>
 
-const EntityIdentifier hd::NullEntityIdentifier = ULONG_MAX;
+const EntityIdentifier stoked::NullEntityIdentifier = ULONG_MAX;
 
-using namespace hd;
+using namespace stoked;
 
-const char * Entity::GetName() const
+const std::string & Entity::GetName() const
 {
     return m_name;
 }
 
 
-void Entity::SetName(const char * name)
+void Entity::SetName(const std::string &name)
 {
-    hdFreeSafely(m_name);
-    m_name = strdup(name);
+    m_name = name;
 }
 
 
@@ -33,7 +37,7 @@ void Entity::PrintUUID() const
 {
     char uuidStr[40];
     uuid_unparse(* m_uuid, uuidStr);
-    hdPrintf("%s\n", uuidStr);
+    fprintf(stderr, "%s\n", uuidStr);
 }
 
 
@@ -52,8 +56,7 @@ Entity::Entity(EntityIdentifier ID) :
 {
     if (!(m_uuid = (uuid_t *)calloc(1, sizeof(uuid_t))))
     {
-        hdError("Calloc\n");
-        hdAssert(false);
+        fprintf(stderr, "Calloc\n");
     }
     uuid_generate(* m_uuid);
 }
@@ -61,7 +64,7 @@ Entity::Entity(EntityIdentifier ID) :
 
 void Entity::AddComponent(std::string key, Component *component)
 {
-    m_components.insert(m_components.begin(), pair<std::string, Component *>(key, component));
+    m_components.insert(m_components.begin(), std::pair<std::string, Component *>(key, component));
 }
 
 
