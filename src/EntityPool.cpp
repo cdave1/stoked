@@ -74,7 +74,7 @@ bool EntityPool::Free(Entity * entity)
         return false;
     }
     
-    //m_usedEntities.remove(entity);
+    m_usedEntities.erase(std::find(m_usedEntities.begin(), m_usedEntities.end(), entity));
     
     entity->Reset();
     m_freeEntities.push_back(entity);
