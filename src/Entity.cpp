@@ -34,8 +34,8 @@ void Entity::PrintDebugInfo() {}
 
 Entity::Entity(EntityIdentifier ID) :
   m_ID(ID),
-  m_name(NULL),
-  m_uuid(NULL),
+  m_name(),
+  m_uuid(nullptr),
   m_components() {
     if (!(m_uuid = (uuid_t *)calloc(1, sizeof(uuid_t)))) {
         fprintf(stderr, "Calloc\n");
