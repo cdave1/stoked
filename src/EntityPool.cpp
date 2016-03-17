@@ -74,6 +74,11 @@ bool EntityPool::Free(Entity * entity) {
 }
 
 
+void EntityPool::FreeAll() {
+    // TODO!
+}
+
+
 void EntityPool::PrintDebugInfo() {
     fprintf(stderr, "%lu free entities available in this pool.\n", m_freeEntities.size());
     //m_usedPool.PrintDebugInfo();

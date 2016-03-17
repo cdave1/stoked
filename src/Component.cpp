@@ -3,6 +3,8 @@
 
 using namespace stoked;
 
+ComponentTypeValue stoked::ComponentType::typeValueCounter = 0;
+
 ComponentIdentifier Component::GetID() const {
     return m_ID;
 }

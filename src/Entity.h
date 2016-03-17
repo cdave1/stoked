@@ -2,9 +2,9 @@
 #define _STOKED_ENTITY_H_
 
 #include <string>
-#include <map>
+#include <array>
 #include <uuid/uuid.h>
-#include "Component.h"
+#include <Component.h>
 
 #define kEntityUUIDSize 40
 
@@ -40,14 +40,18 @@ namespace stoked {
 
         uuid_t *m_uuid;
 
-        std::map<std::string, Component *> m_components;
+        std::array<stoked::Component *, 64> m_components;
 
 
     public:
 
-        std::string GetName() const;
+        std::string GetName() const {
+            return m_name;
+        }
 
-        void SetName(const std::string &name);
+        void SetName(const std::string &name) {
+            m_name = name;
+        }
 
         EntityIdentifier GetID() const;
 
@@ -66,8 +70,8 @@ namespace stoked {
         template<typename T>
         bool ContainsComponent();
 
-        template<typename T1, typename T2>
-        bool ContainsComponents();
+        template<typename T1, typename T2, typename ... Types>
+        bool ContainsComponent();
 
 
     protected:
@@ -76,7 +80,7 @@ namespace stoked {
 
         Entity(EntityIdentifier ID);
 
-        void AddComponent(std::string key, Component *component);
+        void AddComponent(ComponentTypeValue key, Component *component);
 
         Component * GetComponent(ComponentTypeValue key) const;
 
@@ -87,15 +91,10 @@ namespace stoked {
 
 
 template<typename T>
-T * stoked::Entity::AddComponent(T *component) {
+bool stoked::Entity::AddComponent(T *component) {
     ComponentTypeValue key = ComponentType::value<T>();
-    if (GetComponent(key)) {
-        return this->;
-    } else {
-        AddComponent(key, component);
-    }
 
-    if (GetComponent(key) == NULL) {
+    if (GetComponent(key) == nullptr) {
         AddComponent(key, component);
         return true;
     }
@@ -105,25 +104,25 @@ T * stoked::Entity::AddComponent(T *component) {
 
 template<typename T>
 T * stoked::Entity::GetComponent() {
-    std::string key = ComponentType<T>().value();
-    if (GetComponent(key) == NULL) {
-        return NULL;
+    Component *component = GetComponent(ComponentType::value<T>());
+    if (component == nullptr) {
+        return nullptr;
+    } else {
+        return static_cast<T *>(component);
     }
-    T * component = static_cast<T *>(GetComponent(key));
-    return component;
 }
 
 
 template<typename T>
 bool stoked::Entity::ContainsComponent() {
-    std::string key = ComponentType<T>().value();
-    return m_components.count(key) != 0;
+    ComponentTypeValue key = stoked::ComponentType::value<T>();
+    return m_components.at(uint32_t(key)) != nullptr;
 }
 
 
-template<typename T1, typename T2>
-bool stoked::Entity::ContainsComponents() {
-    return ContainsComponent<T1>() && ContainsComponent<T2>();
+template<typename T1, typename T2, typename ... Types>
+bool stoked::Entity::ContainsComponent() {
+    return ContainsComponent<T1>() && ContainsComponent<T2, Types ...>();
 }
 
 #endif

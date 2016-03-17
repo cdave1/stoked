@@ -9,15 +9,6 @@ const EntityIdentifier stoked::NullEntityIdentifier = ULONG_MAX;
 
 using namespace stoked;
 
-const std::string & Entity::GetName() const {
-    return m_name;
-}
-
-
-void Entity::SetName(const std::string &name) {
-    m_name = name;
-}
-
 
 unsigned long Entity::GetID() const {
     return m_ID;
@@ -53,23 +44,23 @@ Entity::Entity(EntityIdentifier ID) :
 }
 
 
-void Entity::AddComponent(std::string key, Component *component) {
-    m_components.insert(m_components.begin(), std::pair<std::string, Component *>(key, component));
+void Entity::AddComponent(ComponentTypeValue key, Component *component) {
+    if (key < m_components.size()) {
+        m_components[uint32_t(key)] = component;
+    }
 }
 
 
-Component * Entity::GetComponent(std::string key) {
-    if (m_components.count(key) == 0) {
-        return NULL;
-    }
-    return m_components[key];
+Component * Entity::GetComponent(ComponentTypeValue key) const {
+    return m_components.at(uint32_t(key));
 }
 
 
 void Entity::Reset() {
-    for (std::map<std::string, Component *>::iterator it = m_components.begin(); it != m_components.end(); ++it) {
-        Component *component = it->second;
-        component->Free();
+    for (auto component : m_components) {
+        if (component) {
+            component->Free();
+        }
     }
-    m_components.clear();
+    m_components.fill(nullptr);
 }

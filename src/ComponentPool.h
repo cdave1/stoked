@@ -87,14 +87,14 @@ bool stoked::ComponentPool<T>::IsNull(T * component) {
 
 template<class T>
 T * stoked::ComponentPool<T>::Get() {
-    hdAssert(m_freeItems.size() <= m_items.size());
+    assert(m_freeItems.size() <= m_items.size());
 
     if (m_freeItems.empty()) {
         return m_nullComponent;
     }
 
-    T * freeItem = m_freeItems->Top();
-    m_freeItems->Pop();
+    T * freeItem = m_freeItems.back();
+    m_freeItems.pop_back();
 
     assert(freeItem->IsFree());
 
@@ -108,7 +108,7 @@ template<class T>
 bool stoked::ComponentPool<T>::Free(Component *usedComponent) {
     T *component = static_cast<T *>(usedComponent);
 
-    hdAssert(m_freeItems.size() <= m_items.size());
+    assert(m_freeItems.size() <= m_items.size());
 
     if (component == NULL) {
         return false;
@@ -122,10 +122,10 @@ bool stoked::ComponentPool<T>::Free(Component *usedComponent) {
         return false;
     }
 
-    hdAssert(component->IsFree());
+    assert(component->IsFree());
     component->Reset();
 
-    m_freeItems->Add(component);
+    m_freeItems.push_back(component);
 
     return true;
 }
@@ -133,7 +133,7 @@ bool stoked::ComponentPool<T>::Free(Component *usedComponent) {
 
 template<class T>
 void stoked::ComponentPool<T>::FreeAll() {
-    m_freeItems->Clear();
+    m_freeItems.clear();
 
     for (int i = 0; i < m_items.size(); ++i) {
         T *component = m_items.at(i);

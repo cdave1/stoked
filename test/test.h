@@ -12,7 +12,7 @@ protected:
 
     friend class stoked::ComponentPool<ComponentA>;
 
-    ComponentA() {}
+    ComponentA(ComponentIdentifier ID) : stoked::Component(ID) {}
 };
 
 class ComponentB : public stoked::Component {
@@ -25,7 +25,7 @@ protected:
 
     friend class stoked::ComponentPool<ComponentB>;
 
-    ComponentB() {}
+    ComponentB(ComponentIdentifier ID) : stoked::Component(ID) {}
 };
 
 class ComponentC : public stoked::Component {
@@ -38,7 +38,7 @@ protected:
 
     friend class stoked::ComponentPool<ComponentC>;
 
-    ComponentC() {}
+    ComponentC(ComponentIdentifier ID) : stoked::Component(ID) {}
 };
 
 

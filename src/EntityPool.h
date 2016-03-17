@@ -15,7 +15,7 @@ namespace stoked {
         std::vector<Entity *> m_usedEntities;
 
         unsigned int m_capacity;
-        
+
         Entity * m_nullEntityRef;
 
 
@@ -26,6 +26,8 @@ namespace stoked {
         Entity * Create();
 
         bool Free(Entity * entity);
+
+        void FreeAll();
 
         bool Available();
 
