@@ -26,6 +26,12 @@ bool Component::IsFree() const {
 }
 
 
+Component::Component() :
+    m_ID(0),
+    m_isFree(true),
+    m_componentPool(NULL) {}
+
+
 Component::Component(ComponentIdentifier ID) :
     m_ID(ID),
     m_isFree(true),

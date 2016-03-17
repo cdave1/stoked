@@ -45,7 +45,7 @@ namespace stoked {
 
     public:
 
-        const std::string & GetName() const;
+        std::string GetName() const;
 
         void SetName(const std::string &name);
 
@@ -78,7 +78,7 @@ namespace stoked {
 
         void AddComponent(std::string key, Component *component);
 
-        Component * GetComponent(std::string key);
+        Component * GetComponent(ComponentTypeValue key) const;
 
         void Reset();
 
@@ -87,11 +87,12 @@ namespace stoked {
 
 
 template<typename T>
-bool stoked::Entity::AddComponent(T *component) {
-    std::string key = ComponentType<T>().value();
-
-    if (key == UNKNOWN_COMPONENT_TYPE) {
-        return false;
+T * stoked::Entity::AddComponent(T *component) {
+    ComponentTypeValue key = ComponentType::value<T>();
+    if (GetComponent(key)) {
+        return this->;
+    } else {
+        AddComponent(key, component);
     }
 
     if (GetComponent(key) == NULL) {

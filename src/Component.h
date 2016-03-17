@@ -3,7 +3,9 @@
 
 #include <string>
 
-typedef unsigned long ComponentIdentifier;
+typedef uint32_t ComponentIdentifier;
+
+typedef uint32_t ComponentTypeValue;
 
 /**
  * Abstract component
@@ -36,6 +38,8 @@ namespace stoked {
 
         friend class AbstractComponentPool;
 
+        Component();
+
         Component(ComponentIdentifier ID);
 
         ~Component();
@@ -47,19 +51,28 @@ namespace stoked {
         void SetBusy();
 
     };
-}
 
+    class ComponentType {
+        static ComponentTypeValue typeValueCounter;
+
+    public:
+        template<typename T>
+        static inline ComponentTypeValue value() {
+            static ComponentTypeValue v = typeValueCounter++;
+            return v;
+        }
+    };
+}
 
 #define UNKNOWN_COMPONENT_TYPE "unknown"
 
 template<typename>
-struct ComponentType {
+struct ComponentName {
     static std::string value() { return UNKNOWN_COMPONENT_TYPE; }
 };
 
 
-#define RegisterComponentType(X) \
-template<> struct ComponentType<X> { static std::string value() { return string(#X); } }
-
+#define RegisterComponentName(X) \
+template<> struct ComponentName<X> { static std::string value() { return string(#X); } }
 
 #endif
