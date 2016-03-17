@@ -9,9 +9,11 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-AX_CXX_COMPILE_STDCXX_11(,mandatory)
+# Enable c++11
+# AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS=`$CXXFLAGS -std=c++0x`])
 
 # Checks for programs.
+# AC_PROG_CXX="$CXXFLAGS -std=c++0x"
 AC_PROG_CXX
 AC_PROG_CC
 
