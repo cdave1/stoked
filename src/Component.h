@@ -8,46 +8,44 @@ typedef unsigned long ComponentIdentifier;
 /**
  * Abstract component
  */
-namespace stoked
-{
+namespace stoked {
     class AbstractComponentPool;
-    
-    class Component
-    {
+
+    class Component {
     private:
-        
+
         ComponentIdentifier m_ID;
-        
+
         bool m_isFree;
-        
+
         AbstractComponentPool *m_componentPool;
-        
-        
+
+
     public:
-        
+
         ComponentIdentifier GetID() const;
-        
+
         void PrintDebugInfo() const;
-        
+
         void const Free();
-        
+
         bool IsFree() const;
-        
-        
+
+
     protected:
-        
+
         friend class AbstractComponentPool;
-        
+
         Component(ComponentIdentifier ID);
-        
+
         ~Component();
-        
+
         virtual void Reset();
-        
+
         void SetComponentPool(AbstractComponentPool *componentPool);
-        
+
         void SetBusy();
-        
+
     };
 }
 
@@ -55,8 +53,7 @@ namespace stoked
 #define UNKNOWN_COMPONENT_TYPE "unknown"
 
 template<typename>
-struct ComponentType
-{
+struct ComponentType {
     static std::string value() { return UNKNOWN_COMPONENT_TYPE; }
 };
 

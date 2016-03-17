@@ -1,20 +1,18 @@
 #ifndef _STOKED_ABSTRACT_COMPONENT_POOL_H_
 #define _STOKED_ABSTRACT_COMPONENT_POOL_H_
 
-namespace stoked
-{
+namespace stoked {
     class Component;
-    
-    class AbstractComponentPool
-    {
+
+    class AbstractComponentPool {
     public:
-        
+
         AbstractComponentPool() {}
-        
+
         virtual bool Free(Component *component) = 0;
-        
+
         virtual void FreeAll() = 0;
-        
+
     };
 }
 
