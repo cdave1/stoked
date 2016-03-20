@@ -43,5 +43,6 @@ AC_CHECK_FUNCS([sqrt])
 AC_CONFIG_FILES([Makefile
                  include/Makefile
                  src/Makefile
-                 test/Makefile])
+                 test/Makefile
+                 example/Makefile])
 AC_OUTPUT

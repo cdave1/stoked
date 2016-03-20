@@ -16,7 +16,7 @@ namespace stoked {
     class Component {
     private:
 
-        ComponentIdentifier m_ID;
+        const ComponentIdentifier m_ID;
 
         bool m_isFree;
 

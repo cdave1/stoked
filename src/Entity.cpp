@@ -20,6 +20,11 @@ const uuid_t * Entity::GetUUID() const {
 }
 
 
+bool Entity::IsNullEntity() const {
+    return m_ID == stoked::NullEntityIdentifier;
+}
+
+
 void Entity::PrintUUID() const {
     char uuidStr[40];
     uuid_unparse(* m_uuid, uuidStr);
@@ -34,8 +39,8 @@ void Entity::PrintDebugInfo() {}
 
 Entity::Entity(EntityIdentifier ID) :
   m_ID(ID),
-  m_name(NULL),
-  m_uuid(NULL),
+  m_name(),
+  m_uuid(nullptr),
   m_components() {
     if (!(m_uuid = (uuid_t *)calloc(1, sizeof(uuid_t)))) {
         fprintf(stderr, "Calloc\n");
