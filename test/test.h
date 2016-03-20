@@ -1,4 +1,4 @@
-#include <stoked.h>
+    #include <stoked.h>
 
 template<class T> class ComponentPool;
 
@@ -44,6 +44,16 @@ protected:
 
 class test {
 public:
+
+    static void TestEntityPool();
+
+    static void TestEmptyEntityPool();
+
+    static void TestComponentPool();
+
+    static void TestEmptyComponentPool();
+
+    static void TestEntityComponentAttachment();
 
     ///
     /// Test the speed of component operations.
