@@ -23,6 +23,8 @@ namespace stoked {
 
         EntityPool(const unsigned long capacity);
 
+        ~EntityPool();
+
         Entity * Create();
 
         bool Free(Entity * entity);
@@ -36,6 +38,10 @@ namespace stoked {
         bool IsNull(Entity * ref);
 
         void PrintDebugInfo();
+
+        unsigned int GetCapacity() const {
+            return m_capacity;
+        }
 
         const std::vector<Entity *> * GetEntities() const;
 

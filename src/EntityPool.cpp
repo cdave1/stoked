@@ -6,7 +6,7 @@ using namespace stoked;
 stoked::EntityPool::EntityPool(const unsigned long capacity) :
   m_entities(capacity),
   m_freeEntities(capacity),
-  m_usedEntities(capacity),
+  m_usedEntities(0),
   m_capacity(capacity),
   m_nullEntityRef(NULL) {
     assert(stoked::NullEntityIdentifier > 0);
@@ -14,11 +14,29 @@ stoked::EntityPool::EntityPool(const unsigned long capacity) :
 
     for (EntityIdentifier i = 0; i < m_capacity; ++i) {
         Entity *entity = new stoked::Entity(i);
-        m_entities.push_back(entity);
-        m_freeEntities.push_back(entity);
+        m_entities[i] = entity;
+        m_freeEntities[i] = entity;
     }
 
     m_nullEntityRef = new Entity(stoked::NullEntityIdentifier);
+}
+
+
+EntityPool::~EntityPool() {
+    m_usedEntities.clear();
+    m_freeEntities.clear();
+
+    std::vector<Entity *> entities(m_entities);
+    m_entities.clear();
+
+    for (uint32_t i = 0; i < entities.size(); ++i) {
+        Entity *entity = entities.at(i);
+        entity->Reset();
+        delete entity;
+    }
+
+    m_nullEntityRef->Reset();
+    delete m_nullEntityRef;
 }
 
 
@@ -75,16 +93,25 @@ bool EntityPool::Free(Entity * entity) {
 
 
 void EntityPool::FreeAll() {
-    // TODO!
+    m_usedEntities.clear();
+    m_freeEntities.clear();
+
+    for (uint32_t i = 0; i < m_entities.size(); ++i) {
+        Entity *entity = m_entities.at(i);
+        entity->Reset();
+        m_freeEntities.push_back(entity);
+    }
+
+    assert(m_usedEntities.size() + m_freeEntities.size() == m_entities.size());
 }
 
 
 void EntityPool::PrintDebugInfo() {
+    fprintf(stdout, "Used: %lu, Free: %lu, Total: %lu\n", m_usedEntities.size(), m_freeEntities.size(), m_entities.size());
     fprintf(stderr, "%lu free entities available in this pool.\n", m_freeEntities.size());
-    //m_usedPool.PrintDebugInfo();
 }
 
 
 const std::vector<Entity *> * EntityPool::GetEntities() const {
-    return &m_usedEntities;
+    return &m_freeEntities;
 }

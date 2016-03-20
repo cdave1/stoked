@@ -37,6 +37,10 @@ namespace stoked {
 
         T * Get();
 
+        unsigned int GetCapacity() {
+            return m_capacity;
+        }
+
         bool Free(Component *component);
 
         void FreeAll();
@@ -65,8 +69,8 @@ stoked::ComponentPool<T>::ComponentPool(const unsigned int capacity) :
     for (int i = 0; i < m_capacity; ++i) {
         T *component = new T(i);
         component->SetComponentPool(this);
-        m_items.push_back(component);
-        m_freeItems.push_back(component);
+        m_items[i] = component;
+        m_freeItems[i] = component;
     }
 
     m_nullComponent = new T(0);

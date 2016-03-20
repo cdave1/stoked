@@ -20,6 +20,11 @@ const uuid_t * Entity::GetUUID() const {
 }
 
 
+bool Entity::IsNullEntity() const {
+    return m_ID == stoked::NullEntityIdentifier;
+}
+
+
 void Entity::PrintUUID() const {
     char uuidStr[40];
     uuid_unparse(* m_uuid, uuidStr);

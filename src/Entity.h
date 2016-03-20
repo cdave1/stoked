@@ -34,7 +34,7 @@ namespace stoked {
     class Entity {
     private:
 
-        EntityIdentifier m_ID;
+        const EntityIdentifier m_ID;
 
         std::string m_name;
 
@@ -56,6 +56,8 @@ namespace stoked {
         EntityIdentifier GetID() const;
 
         const uuid_t * GetUUID() const;
+
+        bool IsNullEntity() const;
 
         void PrintUUID() const;
 
